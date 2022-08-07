@@ -10,7 +10,7 @@ const {
 const getCards = (req, res) => {
   Cards.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Internal server error' }));
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
 };
 
 const createCard = (req, res) => {
