@@ -1,10 +1,16 @@
 const Users = require('../models/user');
 const ErrorNotFound = require('../errors/ErrorNotFound');
+const {
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require('../utils/constans');
 
 const getUsers = (req, res) => {
   Users.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: 'Internal server error', err }));
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' }));
 };
 
 const getUser = (req, res) => {
@@ -12,27 +18,27 @@ const getUser = (req, res) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемый пользователь не найден');
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
       if (err.statusCode === 404) {
-        return res.status(404).send({ message: err.errorMessage });
+        return res.status(NOT_FOUND).send({ message: err.errorMessage });
       }
-      return res.status(500).send({ message: 'Internal server error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
     });
 };
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   Users.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(CREATED).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(500).send({ message: 'Internal server error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
     });
 };
 
@@ -42,15 +48,15 @@ const updateUserInfo = (req, res) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемый пользователь не найден');
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
       if (err.statusCode === 404) {
-        return res.status(404).send({ message: err.errorMessage });
+        return res.status(NOT_FOUND).send({ message: err.errorMessage });
       }
-      return res.status(500).send({ message: 'Internal server error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
     });
 };
 
@@ -60,15 +66,15 @@ const updateAvatar = (req, res) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемый пользователь не найден');
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
       if (err.statusCode === 404) {
-        return res.status(404).send({ message: err.errorMessage });
+        return res.status(NOT_FOUND).send({ message: err.errorMessage });
       }
-      return res.status(500).send({ message: 'Internal server error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
     });
 };
 

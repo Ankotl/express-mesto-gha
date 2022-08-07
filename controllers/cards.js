@@ -1,21 +1,27 @@
 const Cards = require('../models/card');
 const ErrorNotFound = require('../errors/ErrorNotFound');
+const {
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require('../utils/constans');
 
 const getCards = (req, res) => {
   Cards.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: 'Internal server error', err }));
+    .catch(() => res.status(500).send({ message: 'Internal server error' }));
 };
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
   Cards.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(CREATED).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(500).send({ message: 'Internal server error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
     });
 };
 
@@ -28,15 +34,15 @@ const likeCard = (req, res) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемая карточка не найдена');
     })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
       if (err.statusCode === 404) {
-        return res.status(404).send({ message: err.errorMessage });
+        return res.status(NOT_FOUND).send({ message: err.errorMessage });
       }
-      return res.status(500).send({ message: 'Internal server error' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Internal server error' });
     });
 };
 
@@ -45,15 +51,15 @@ const dislikeCard = (req, res) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемая карточка не найдена');
     })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
       if (err.statusCode === 404) {
-        return res.status(404).send({ message: err.errorMessage });
+        return res.status(NOT_FOUND).send({ message: err.errorMessage });
       }
-      return res.status(500).send({ message: 'Ошибка по-умолчанию' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по-умолчанию' });
     });
 };
 
@@ -62,15 +68,15 @@ const deleteCard = (req, res) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемая карточка не найдена');
     })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
       }
       if (err.statusCode === 404) {
-        return res.status(404).send({ message: err.errorMessage });
+        return res.status(NOT_FOUND).send({ message: err.errorMessage });
       }
-      return res.status(500).send({ message: 'Ошибка по-умолчанию' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по-умолчанию' });
     });
 };
 
