@@ -1,7 +1,6 @@
 const Users = require('../models/user');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const {
-  CREATED,
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
@@ -33,7 +32,7 @@ const getUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   Users.create({ name, about, avatar })
-    .then((user) => res.status(CREATED).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
