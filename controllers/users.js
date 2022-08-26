@@ -16,15 +16,13 @@ const getUser = (req, res, next) => {
     .orFail(() => {
       throw new ErrorNotFound('Запрашиваемый пользователь не найден');
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest('Передан некорректный _id пользователя.'));
+      } else {
+        next(err);
       }
-      if (err.statusCode === 404) {
-        next(new ErrorNotFound('Запрашиваемый пользователь не найден'));
-      }
-      next(err);
     });
 };
 
