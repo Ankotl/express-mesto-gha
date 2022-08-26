@@ -7,7 +7,7 @@ const ConflictError = require('../errors/ConflictError');
 
 const getUsers = (req, res, next) => {
   Users.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -97,17 +97,8 @@ const updateAvatar = (req, res, next) => {
 
 const getCurrentUser = (req, res, next) => {
   Users.findById(req.user._id)
-    .orFail(() => {
-      throw new ErrorNotFound('Пользователь не найден');
-    })
-    .then((user) => res.status(200).send({ user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequest('Переданы некорректные данные');
-      } else if (err.message === 'NotFound') {
-        throw new ErrorNotFound('Пользователь не найден');
-      }
-    })
+    .orFail(() => next(new ErrorNotFound('Пользователь по указанному _id не найден.')))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
