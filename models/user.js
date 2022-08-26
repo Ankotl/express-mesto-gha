@@ -7,14 +7,12 @@ const { REGEX_LINK } = require('../constans');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 30,
     default: 'Исследователь океана',
@@ -22,7 +20,6 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    required: true,
     validate: {
       validator: (url) => REGEX_LINK.test(url),
       message: 'Некорректный адрес URL',
