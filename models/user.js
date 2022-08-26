@@ -7,15 +7,15 @@ const { REGEX_LINK } = require('../constans');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
+    default: 'Жак-Ив Кусто',
     minlength: 2,
     maxlength: 30,
-    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Исследователь океана',
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
